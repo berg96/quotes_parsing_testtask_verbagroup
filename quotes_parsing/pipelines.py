@@ -1,6 +1,8 @@
 import os
 
-from sqlalchemy import Column, Integer, String, Text, create_engine
+from sqlalchemy import (
+    Column, Integer, String, Text, UniqueConstraint, create_engine
+)
 from sqlalchemy.orm import Session, declarative_base
 
 from quotes_parsing.settings import RESULTS_DIR
@@ -15,6 +17,10 @@ class Quote(Base):
     author = Column(String(200))
     tags = Column(String(400))
 
+    __table_args__ = (
+        UniqueConstraint('text', 'author', name='unique_text_author'),
+    )
+
 
 class QuotesToDBPipeline:
     def __init__(self):
@@ -28,13 +34,15 @@ class QuotesToDBPipeline:
         self.session = Session(engine)
 
     def process_item(self, item, spider):
-        quote = Quote(
-            text=item['text'],
-            author=item['author'],
-            tags=', '.join(item['tags']),
-        )
-        self.session.add(quote)
-        self.session.commit()
+        if not self.session.query(Quote).filter_by(
+                text=item['text'], author=item['author']
+        ).first():
+            self.session.add(Quote(
+                text=item['text'],
+                author=item['author'],
+                tags=', '.join(item['tags']),
+            ))
+            self.session.commit()
         return item
 
     def close_spider(self, spider):

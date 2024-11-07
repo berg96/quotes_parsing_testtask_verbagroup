@@ -97,8 +97,8 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 FEEDS = {
-    f'{NAME_RESULTS_DIR}/quotes_%(time)s.csv': {
-        'format': 'csv',
+    f'{NAME_RESULTS_DIR}/quotes_%(time)s.json': {
+        'format': 'json',
         'fields': ['text', 'author', 'tags'],
         'overwrite': True
     },
