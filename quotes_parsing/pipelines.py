@@ -1,7 +1,7 @@
 import os
 
 from sqlalchemy import Column, Integer, String, Text, create_engine
-from sqlalchemy.orm import declarative_base, Session
+from sqlalchemy.orm import Session, declarative_base
 
 from quotes_parsing.settings import RESULTS_DIR
 
